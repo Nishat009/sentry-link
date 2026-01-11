@@ -266,7 +266,7 @@ export default function EvidenceDetail() {
 
           <div className="space-y-2">
             <Label>Document File</Label>
-            <div className="flex items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 p-6 transition-colors hover:border-muted-foreground/50">
+            <div className="relative flex items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 p-6 transition-colors hover:border-muted-foreground/50">
               <div className="text-center">
                 <Upload className="mx-auto h-8 w-8 text-muted-foreground" />
                 <p className="mt-2 text-sm text-muted-foreground">

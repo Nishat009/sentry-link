@@ -5,7 +5,10 @@ import {
   ClipboardList, 
   Shield,
   ChevronRight,
+  Menu,
+  X,
 } from 'lucide-react';
+import { useState } from 'react';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -18,11 +21,20 @@ const navigation = [
 
 export function AppLayout({ children }: AppLayoutProps) {
   const location = useLocation();
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!isSidebarOpen);
+  };
 
   return (
     <div className="flex min-h-screen bg-background">
       {/* Sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-50 w-64 bg-sidebar border-r border-sidebar-border">
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-sidebar border-r border-sidebar-border transition-transform transform ${
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        } md:translate-x-0`}
+      >
         <div className="flex h-full flex-col">
           {/* Logo */}
           <div className="flex h-16 items-center gap-2 border-b border-sidebar-border px-6">
@@ -62,18 +74,17 @@ export function AppLayout({ children }: AppLayoutProps) {
               );
             })}
           </nav>
-
-          {/* Footer */}
-          <div className="border-t border-sidebar-border p-4">
-            <div className="text-xs text-sidebar-foreground/60">
-              Phase A Demo
-            </div>
-          </div>
         </div>
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 pl-64">
+      <main className="flex-1 md:pl-64">
+        <button
+          className="fixed top-4 left-4 z-50 p-2 bg-sidebar-accent text-sidebar-accent-foreground rounded-md md:hidden"
+          onClick={toggleSidebar}
+        >
+          {isSidebarOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        </button>
         <div className="h-full">{children}</div>
       </main>
     </div>
