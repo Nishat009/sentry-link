@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { format, isAfter, isBefore, addDays } from 'date-fns';
-import { Search, Filter, Package, FileText, X } from 'lucide-react';
+import { Search, Filter, Package, FileText, X, Eye } from 'lucide-react';
 import { AppLayout } from '@/components/AppLayout';
 import { PageHeader } from '@/components/PageHeader';
 import { DataTable, Column } from '@/components/DataTable';
@@ -147,6 +147,24 @@ export default function EvidenceVault() {
         <span className="text-sm text-muted-foreground">
           {format(new Date(item.lastUpdated), 'MMM d, yyyy')}
         </span>
+      ),
+    },
+    {
+      key: 'actions',
+      header: 'Actions',
+      render: (item) => (
+        <Button
+          variant="ghost"
+          size="sm"
+          className="gap-1.5"
+          onClick={(e) => {
+            e.stopPropagation();
+            navigate(`/evidence/${item.id}`);
+          }}
+        >
+          <Eye className="h-4 w-4" />
+          View
+        </Button>
       ),
     },
   ];

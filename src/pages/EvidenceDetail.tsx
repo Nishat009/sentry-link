@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import {
@@ -29,16 +29,16 @@ export default function EvidenceDetail() {
   const [uploadNotes, setUploadNotes] = useState('');
   const [uploadExpiry, setUploadExpiry] = useState('');
   const [uploadFile, setUploadFile] = useState<File | null>(null);
-  const [versions, setVersions] = useState<EvidenceVersion[]>([]);
 
   const evidence = mockEvidence.find((e) => e.id === id);
+  const [versions, setVersions] = useState<EvidenceVersion[]>(evidence?.versions || []);
 
-  // Initialize versions from evidence data
-  useState(() => {
+  // Initialize versions from evidence data when evidence changes
+  useEffect(() => {
     if (evidence) {
       setVersions(evidence.versions);
     }
-  });
+  }, [evidence]);
 
   if (!evidence) {
     return (
@@ -58,8 +58,6 @@ export default function EvidenceDetail() {
     );
   }
 
-  const currentVersions = versions.length > 0 ? versions : evidence.versions;
-
   const handleUploadSubmit = () => {
     if (!uploadNotes.trim()) {
       toast({
@@ -71,8 +69,8 @@ export default function EvidenceDetail() {
     }
 
     const newVersion: EvidenceVersion = {
-      id: `v-${evidence.id}-${currentVersions.length + 1}`,
-      version: currentVersions.length + 1,
+      id: `v-${evidence.id}-${versions.length + 1}`,
+      version: versions.length + 1,
       uploadedAt: new Date().toISOString().split('T')[0],
       uploadedBy: 'Current User',
       notes: uploadNotes,
@@ -80,7 +78,7 @@ export default function EvidenceDetail() {
       fileName: uploadFile?.name || 'document.pdf',
     };
 
-    setVersions([newVersion, ...currentVersions]);
+    setVersions([newVersion, ...versions]);
     setIsUploadModalOpen(false);
     setUploadNotes('');
     setUploadExpiry('');
@@ -160,7 +158,7 @@ export default function EvidenceDetail() {
               Total Versions
             </div>
             <div className="mt-2 text-foreground font-medium">
-              {currentVersions.length} version{currentVersions.length !== 1 ? 's' : ''}
+              {versions.length} version{versions.length !== 1 ? 's' : ''}
             </div>
           </div>
         </div>
@@ -177,7 +175,7 @@ export default function EvidenceDetail() {
         <div className="mt-8">
           <h2 className="text-lg font-semibold">Version History</h2>
           <div className="mt-4 space-y-3">
-            {currentVersions.map((version, index) => (
+            {versions.map((version, index) => (
               <div
                 key={version.id}
                 className="rounded-xl border bg-card p-4 transition-colors hover:bg-muted/30"
